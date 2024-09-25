@@ -25,25 +25,27 @@
       "require": "./dist/index.cjs"
     }
   },
+  "imports": {
+    "#analog/ssr": "./dist/index.mjs",
+    "#analog/index": "./dist/index.mjs"
+  },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
-  "imports": {
-    "#analog/ssr": "./src/index.js",
-    "#analog/index": "./src/index.js"
-  },
+  "files": [
+    "dist"
+  ],
   "engines": {
-    "node": "^14.18.0 || >=16.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "dev": "unbuild --stub",
+    "build": "unbuild",
     "test": "vitest",
-    "build:runtime": "tsc src/lib/runtime/*",
-    "lint": "eslint .",
-    "build": "unbuild"
+    "release": "bumpp && pnpm publish",
+    "lint": "eslint ."
   },
   "peerDependencies": {
-    "vite": "^4.2.0 || ^5.0.0"
+    "vite": "^5.0.0"
   },
   "dependencies": {
     "esbuild": "^0.24.0",
@@ -56,6 +58,7 @@
   "devDependencies": {
     "@ourongxing/eslint-config": "3.2.3-beta.3",
     "@types/node": "^22.7.0",
+    "bumpp": "^9.5.2",
     "eslint": "^9.11.1",
     "typescript": "^5.6.2",
     "unbuild": "^2.0.0",
