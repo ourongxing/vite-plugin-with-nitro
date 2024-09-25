@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "declaration": true,
     "target": "ES2022",
     "lib": [
       "ES2023"
     ],
+    "moduleDetection": "force",
     "module": "ESNext",
-    "skipLibCheck": true,
+
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node"],
     "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
     /* Linting */
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node"]
+    "declaration": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
+  "exclude": ["src/lib/runtime/*"]
 }

@@ -1,8 +1,12 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from "unbuild"
 
 export default defineBuildConfig({
-  entries: ['src/index'],
-  externals: ['vite'],
+  entries: ["src/index", {
+    builder: "mkdist",
+    input: "./src/lib/runtime",
+    outDir: "./dist/runtime",
+  }],
+  externals: ["vite"],
   clean: true,
   declaration: true,
   rollup: {

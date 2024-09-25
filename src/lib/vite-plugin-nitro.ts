@@ -1,87 +1,81 @@
-import { NitroConfig, build, createDevServer, createNitro } from 'nitropack';
-import { App, toNodeListener } from 'h3';
-import type { Plugin, UserConfig, ViteDevServer } from 'vite';
-import { mergeConfig, normalizePath } from 'vite';
-import { dirname, join, relative, resolve } from 'node:path';
-import { platform } from 'node:os';
-import { fileURLToPath } from 'node:url';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, resolve } from "node:path"
+import { platform } from "node:os"
+import { fileURLToPath } from "node:url"
+import { readFileSync, writeFileSync } from "node:fs"
+import process from "node:process"
+import type { NitroConfig } from "nitropack"
+import { build, createDevServer, createNitro } from "nitropack"
+import type { App } from "h3"
+import { toNodeListener } from "h3"
+import type { Plugin, UserConfig, ViteDevServer } from "vite"
+import { mergeConfig, normalizePath } from "vite"
 
-import { buildServer } from './build-server';
-import { buildSSRApp } from './build-ssr';
-import {
+import { buildServer } from "./build-server"
+import { buildSSRApp } from "./build-ssr"
+import type {
   Options,
   PrerenderContentDir,
   PrerenderContentFile,
-} from './options';
-import { pageEndpointsPlugin } from './plugins/page-endpoints';
-import { getPageHandlers } from './utils/get-page-handlers';
-import { buildSitemap } from './build-sitemap';
-import { devServerPlugin } from './plugins/dev-server-plugin';
-import { getMatchingContentFilesWithFrontMatter } from './utils/get-content-files';
+} from "./options"
+import { pageEndpointsPlugin } from "./plugins/page-endpoints"
+import { getPageHandlers } from "./utils/get-page-handlers"
+import { buildSitemap } from "./build-sitemap"
+import { devServerPlugin } from "./plugins/dev-server-plugin"
+import { getMatchingContentFilesWithFrontMatter } from "./utils/get-content-files"
 
-const isWindows = platform() === 'win32';
-const filePrefix = isWindows ? 'file:///' : '';
-let clientOutputPath = '';
+const isWindows = platform() === "win32"
+const filePrefix = isWindows ? "file:///" : ""
+let clientOutputPath = ""
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
-  const workspaceRoot = options?.workspaceRoot ?? process.cwd();
-  const isTest = process.env['NODE_ENV'] === 'test' || !!process.env['VITEST'];
-  const apiPrefix = `/${nitroOptions?.runtimeConfig?.['apiPrefix'] ?? 'api'}`;
+  const workspaceRoot = options?.workspaceRoot ?? process.cwd()
+  const isTest = process.env.NODE_ENV === "test" || !!process.env.VITEST
+  const apiPrefix = `/${nitroOptions?.runtimeConfig?.apiPrefix ?? "api"}`
 
-  let isBuild = false;
-  let isServe = false;
-  let ssrBuild = false;
-  let config: UserConfig;
-  let nitroConfig: NitroConfig;
+  let isBuild = false
+  let isServe = false
+  let ssrBuild = false
+  let config: UserConfig
+  let nitroConfig: NitroConfig
 
   return [
     (options?.ssr ? devServerPlugin(options) : false) as Plugin,
     {
-      name: '@analogjs/vite-plugin-nitro',
+      name: "@analogjs/vite-plugin-nitro",
       async config(_config, { command }) {
-        isServe = command === 'serve';
-        isBuild = command === 'build';
-        ssrBuild = _config.build?.ssr === true;
-        config = _config;
-        const rootDir = relative(workspaceRoot, config.root || '.') || '.';
-        const buildPreset =
-          process.env['BUILD_PRESET'] ??
-          (nitroOptions?.preset as string | undefined);
+        isServe = command === "serve"
+        isBuild = command === "build"
+        ssrBuild = _config.build?.ssr === true
+        config = _config
+        const rootDir = relative(workspaceRoot, config.root || ".") || "."
+        const buildPreset
+          = process.env.BUILD_PRESET
+          ?? (nitroOptions?.preset as string | undefined)
 
         const pageHandlers = getPageHandlers({
           workspaceRoot,
           rootDir,
           additionalPagesDirs: options?.additionalPagesDirs,
-        });
+        })
 
-        const apiMiddlewareHandler =
-          filePrefix +
-          normalizePath(
-            join(__dirname, `runtime/api-middleware${filePrefix ? '.mjs' : ''}`)
-          );
-        const ssrEntry = normalizePath(
-          filePrefix +
-            resolve(
-              workspaceRoot,
-              'dist',
-              rootDir,
-              `ssr/main.server${filePrefix ? '.js' : ''}`
-            )
-        );
-        const rendererEntry =
-          filePrefix +
-          normalizePath(
-            join(
-              __dirname,
-              `runtime/renderer${!options?.ssr ? '-client' : ''}${
-                filePrefix ? '.mjs' : ''
-              }`
-            )
-          );
+        const apiMiddlewareHandler
+          = filePrefix + normalizePath(join(__dirname, `runtime/api-middleware${filePrefix ? ".mjs" : ""}`))
+        const ssrEntry = normalizePath(filePrefix + resolve(
+          workspaceRoot,
+          "dist",
+          rootDir,
+          `ssr/main.server${filePrefix ? ".js" : ""}`,
+        ))
+        const rendererEntry = filePrefix + normalizePath(join(
+          __dirname,
+          `runtime/renderer${!options?.ssr ? "-client" : ""}${
+            filePrefix ? ".mjs" : ""
+          }`,
+        ),
+        )
 
         nitroConfig = {
           rootDir,
@@ -90,32 +84,33 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
           srcDir: normalizePath(`${rootDir}/src/server`),
           scanDirs: [
             normalizePath(`${rootDir}/src/server`),
-            ...(options?.additionalAPIDirs || []).map((dir) =>
-              normalizePath(`${workspaceRoot}${dir}`)
+            ...(options?.additionalAPIDirs || []).map(dir =>
+              normalizePath(`${workspaceRoot}${dir}`),
             ),
           ],
           output: {
             dir: normalizePath(
-              resolve(workspaceRoot, 'dist', rootDir, 'analog')
+              resolve(workspaceRoot, "dist", rootDir, "analog"),
             ),
             publicDir: normalizePath(
-              resolve(workspaceRoot, 'dist', rootDir, 'analog/public')
+              resolve(workspaceRoot, "dist", rootDir, "analog/public"),
             ),
           },
           buildDir: normalizePath(
-            resolve(workspaceRoot, 'dist', rootDir, '.nitro')
+            resolve(workspaceRoot, "dist", rootDir, ".nitro"),
           ),
           typescript: {
             generateTsConfig: false,
           },
           rollupConfig: {
-            onwarn(warning) {
-              if (
-                warning.message.includes('empty chunk') &&
-                warning.message.endsWith('.server')
-              ) {
-                return;
-              }
+            onwarn(_warning) {
+              // TODO
+              // if (
+              //   warning.message.includes("empty chunk")
+              //   && warning.message.endsWith(".server")
+              // ) {
+
+              // }
             },
             plugins: [pageEndpointsPlugin()],
           },
@@ -126,14 +121,14 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
             },
             ...pageHandlers,
           ],
-        };
+        }
 
         if (isVercelPreset(buildPreset)) {
-          nitroConfig = withVercelOutputAPI(nitroConfig, workspaceRoot);
+          nitroConfig = withVercelOutputAPI(nitroConfig, workspaceRoot)
         }
 
         if (isCloudflarePreset(buildPreset)) {
-          nitroConfig = withCloudflareOutput(nitroConfig);
+          nitroConfig = withCloudflareOutput(nitroConfig)
         }
 
         if (!ssrBuild && !isTest) {
@@ -141,90 +136,90 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
           clientOutputPath = resolve(
             workspaceRoot,
             rootDir,
-            config.build?.outDir || 'dist/client'
-          );
+            config.build?.outDir || "dist/client",
+          )
         }
 
         const indexEntry = normalizePath(
-          resolve(clientOutputPath, 'index.html')
-        );
+          resolve(clientOutputPath, "index.html"),
+        )
 
         nitroConfig.alias = {
-          '#analog/ssr': ssrEntry,
-          '#analog/index': indexEntry,
-        };
+          "#analog/ssr": ssrEntry,
+          "#analog/index": indexEntry,
+        }
 
         if (isBuild) {
-          nitroConfig.publicAssets = [{ dir: clientOutputPath }];
+          nitroConfig.publicAssets = [{ dir: clientOutputPath }]
           nitroConfig.serverAssets = [
             {
-              baseName: 'public',
+              baseName: "public",
               dir: clientOutputPath,
             },
-          ];
-          nitroConfig.renderer = rendererEntry;
+          ]
+          nitroConfig.renderer = rendererEntry
 
           if (isEmptyPrerenderRoutes(options)) {
-            nitroConfig.prerender = {};
-            nitroConfig.prerender.routes = ['/'];
+            nitroConfig.prerender = {}
+            nitroConfig.prerender.routes = ["/"]
           }
 
           if (options?.prerender) {
-            nitroConfig.prerender = nitroConfig.prerender ?? {};
-            nitroConfig.prerender.crawlLinks = options?.prerender?.discover;
+            nitroConfig.prerender = nitroConfig.prerender ?? {}
+            nitroConfig.prerender.crawlLinks = options?.prerender?.discover
 
-            let routes: (string | PrerenderContentDir | undefined)[] = [];
+            let routes: (string | PrerenderContentDir | undefined)[] = []
 
-            const prerenderRoutes = options?.prerender?.routes;
+            const prerenderRoutes = options?.prerender?.routes
             if (
               isArrayWithElements<string | PrerenderContentDir>(prerenderRoutes)
             ) {
-              routes = prerenderRoutes;
-            } else if (typeof prerenderRoutes === 'function') {
-              routes = await prerenderRoutes();
+              routes = prerenderRoutes
+            } else if (typeof prerenderRoutes === "function") {
+              routes = await prerenderRoutes()
             }
 
             nitroConfig.prerender.routes = routes.reduce<string[]>(
               (prev, current) => {
                 if (!current) {
-                  return prev;
+                  return prev
                 }
-                if (typeof current === 'string') {
-                  prev.push(current);
-                  return prev;
+                if (typeof current === "string") {
+                  prev.push(current)
+                  return prev
                 }
-                const affectedFiles: PrerenderContentFile[] =
-                  getMatchingContentFilesWithFrontMatter(
+                const affectedFiles: PrerenderContentFile[]
+                  = getMatchingContentFilesWithFrontMatter(
                     workspaceRoot,
                     rootDir,
-                    current.contentDir
-                  );
+                    current.contentDir,
+                  )
 
                 affectedFiles.forEach((f) => {
-                  const result = current.transform(f);
+                  const result = current.transform(f)
                   if (result) {
-                    prev.push(result);
+                    prev.push(result)
                   }
-                });
+                })
 
-                return prev;
+                return prev
               },
-              []
-            );
+              [],
+            )
           }
 
           if (ssrBuild) {
             if (isWindows) {
               const indexContents = readFileSync(
-                normalizePath(join(clientOutputPath, 'index.html')),
-                'utf-8'
-              );
+                normalizePath(join(clientOutputPath, "index.html")),
+                "utf-8",
+              )
 
               // Write out the renderer manually because
               // Windows doesn't resolve the aliases
               // correctly in its native environment
               writeFileSync(
-                normalizePath(rendererEntry.replace(filePrefix, '')),
+                normalizePath(rendererEntry.replace(filePrefix, "")),
                 `
               /**
                * This file is shipped as ESM for Windows support,
@@ -244,16 +239,16 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
                 });
                 return html;
               });
-              `
-              );
+              `,
+              )
             }
 
             nitroConfig = {
               ...nitroConfig,
               externals: {
-                external: ['rxjs', 'node-fetch-native/dist/polyfill'],
+                external: ["rxjs", "node-fetch-native/dist/polyfill"],
               },
-              moduleSideEffects: ['zone.js/node', 'zone.js/fesm2015/zone-node'],
+              moduleSideEffects: ["zone.js/node", "zone.js/fesm2015/zone-node"],
               handlers: [
                 {
                   handler: apiMiddlewareHandler,
@@ -261,114 +256,115 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
                 },
                 ...pageHandlers,
               ],
-            };
+            }
           }
         }
 
         nitroConfig = mergeConfig(
           nitroConfig,
-          nitroOptions as Record<string, any>
-        );
+          nitroOptions as Record<string, any>,
+        )
       },
       async configureServer(viteServer: ViteDevServer) {
         if (isServe && !isTest) {
           const nitro = await createNitro({
             dev: true,
             ...nitroConfig,
-          });
-          const server = createDevServer(nitro);
-          await build(nitro);
+          })
+          const server = createDevServer(nitro)
+          await build(nitro)
           viteServer.middlewares.use(
             apiPrefix,
-            toNodeListener(server.app as unknown as App)
-          );
+            toNodeListener(server.app as unknown as App),
+          )
 
-          viteServer.httpServer?.once('listening', () => {
-            process.env['ANALOG_HOST'] = !viteServer.config.server.host
-              ? 'localhost'
-              : (viteServer.config.server.host as string);
-            process.env['ANALOG_PORT'] = `${viteServer.config.server.port}`;
-          });
+          viteServer.httpServer?.once("listening", () => {
+            process.env.ANALOG_HOST = !viteServer.config.server.host
+              ? "localhost"
+              : (viteServer.config.server.host as string)
+            process.env.ANALOG_PORT = `${viteServer.config.server.port}`
+          })
 
           console.log(
-            `\n\nThe server endpoints are accessible under the "${apiPrefix}" path.`
-          );
+            `\n\nThe server endpoints are accessible under the "${apiPrefix}" path.`,
+          )
         }
       },
 
       async closeBundle() {
         if (ssrBuild) {
-          return;
+          return
         }
 
         if (isBuild) {
           if (options?.ssr) {
-            console.log('Building SSR application...');
-            await buildSSRApp(config, options);
+            console.log("Building SSR application...")
+            await buildSSRApp(config, options)
           }
 
           if (
-            nitroConfig.prerender?.routes?.length &&
-            options?.prerender?.sitemap
+            nitroConfig.prerender?.routes?.length
+            && options?.prerender?.sitemap
           ) {
-            console.log('Building Sitemap...');
+            console.log("Building Sitemap...")
             // sitemap needs to be built after all directories are built
             await buildSitemap(
               config,
               options.prerender.sitemap,
               nitroConfig.prerender.routes,
-              clientOutputPath
-            );
+              clientOutputPath,
+            )
           }
 
-          await buildServer(options, nitroConfig);
+          await buildServer(options, nitroConfig)
 
           console.log(
-            `\n\nThe '@analogjs/platform' server has been successfully built.`
-          );
+            `\n\nThe '@analogjs/platform' server has been successfully built.`,
+          )
         }
       },
     },
-  ];
+  ]
 }
 
 function isEmptyPrerenderRoutes(options?: Options): boolean {
   if (!options || isArrayWithElements(options?.prerender?.routes)) {
-    return false;
+    return false
   }
-  return !options.prerender?.routes;
+  return !options.prerender?.routes
 }
 
 function isArrayWithElements<T>(arr: unknown): arr is [T, ...T[]] {
-  return !!(Array.isArray(arr) && arr.length);
+  return !!(Array.isArray(arr) && arr.length)
 }
 
-const isVercelPreset = (buildPreset: string | undefined) =>
-  process.env['VERCEL'] ||
-  (buildPreset && buildPreset.toLowerCase().includes('vercel'));
+function isVercelPreset(buildPreset: string | undefined): boolean {
+  return !!(process.env.VERCEL || (buildPreset && buildPreset.toLowerCase().includes("vercel")))
+}
 
-const withVercelOutputAPI = (
-  nitroConfig: NitroConfig | undefined,
-  workspaceRoot: string
-) => ({
-  ...nitroConfig,
-  output: {
-    ...nitroConfig?.output,
-    dir: normalizePath(resolve(workspaceRoot, '.vercel', 'output')),
-    publicDir: normalizePath(
-      resolve(workspaceRoot, '.vercel', 'output/static')
-    ),
-  },
-});
+function withVercelOutputAPI(nitroConfig: NitroConfig | undefined, workspaceRoot: string): NitroConfig {
+  return {
+    ...nitroConfig,
+    output: {
+      ...nitroConfig?.output,
+      dir: normalizePath(resolve(workspaceRoot, ".vercel", "output")),
+      publicDir: normalizePath(
+        resolve(workspaceRoot, ".vercel", "output/static"),
+      ),
+    },
+  }
+}
 
-const isCloudflarePreset = (buildPreset: string | undefined) =>
-  process.env['CF_PAGES'] ||
-  (buildPreset && buildPreset.toLowerCase().includes('cloudflare-pages'));
+function isCloudflarePreset(buildPreset: string | undefined): boolean {
+  return !!(process.env.CF_PAGES || (buildPreset && buildPreset.toLowerCase().includes("cloudflare-pages")))
+}
 
-const withCloudflareOutput = (nitroConfig: NitroConfig | undefined) => ({
-  ...nitroConfig,
-  output: {
-    ...nitroConfig?.output,
-    serverDir: '{{ output.publicDir }}/_worker.js',
-  },
-});
+function withCloudflareOutput(nitroConfig: NitroConfig | undefined): NitroConfig {
+  return {
+    ...nitroConfig,
+    output: {
+      ...nitroConfig?.output,
+      serverDir: "{{ output.publicDir }}/_worker.js",
+    },
+  }
+}

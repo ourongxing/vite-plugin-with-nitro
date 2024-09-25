@@ -11,15 +11,15 @@ npm install @analogjs/vite-plugin-nitro --save-dev
 Add the plugin to the `plugins` array in your Vite config
 
 ```ts
-import { defineConfig } from 'vite';
-import nitro from '@analogjs/vite-plugin-nitro';
+import { defineConfig } from "vite"
+import nitro from "@analogjs/vite-plugin-nitro"
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
-    mainFields: ['module'],
+    mainFields: ["module"],
   },
 
   plugins: [nitro()],
-});
+})
 ```

@@ -1,33 +1,33 @@
-import { Nitro } from 'nitropack';
-import { vi } from 'vitest';
+import type { Nitro } from "nitropack"
+import { vi } from "vitest"
 
-import { addPostRenderingHooks } from './post-rendering-hook';
+import { addPostRenderingHooks } from "./post-rendering-hook"
 
-describe('postRenderingHook', () => {
+describe("postRenderingHook", () => {
   const genRoute = {
-    route: 'test/testRoute',
-    contents: 'This is a test.',
-  };
+    route: "test/testRoute",
+    contents: "This is a test.",
+  }
 
   const nitroMock = {
     hooks: {
       hook: vi.fn((name: string, callback: (route: any) => void) =>
-        callback(genRoute)
+        callback(genRoute),
       ),
     },
-  } as unknown as Nitro;
+  } as unknown as Nitro
 
-  const mockFunc1 = vi.fn();
-  const mockFunc2 = vi.fn();
+  const mockFunc1 = vi.fn()
+  const mockFunc2 = vi.fn()
 
-  it('should not attempt to call nitro mocks if no callbacks provided', () => {
-    addPostRenderingHooks(nitroMock, []);
-    expect(nitroMock.hooks.hook).not.toHaveBeenCalled();
-  });
+  it("should not attempt to call nitro mocks if no callbacks provided", () => {
+    addPostRenderingHooks(nitroMock, [])
+    expect(nitroMock.hooks.hook).not.toHaveBeenCalled()
+  })
 
-  it('should call provided hooks', () => {
-    addPostRenderingHooks(nitroMock, [mockFunc1, mockFunc2]);
-    expect(mockFunc1).toHaveBeenCalledWith(genRoute);
-    expect(mockFunc2).toHaveBeenCalled();
-  });
-});
+  it("should call provided hooks", () => {
+    addPostRenderingHooks(nitroMock, [mockFunc1, mockFunc2])
+    expect(mockFunc1).toHaveBeenCalledWith(genRoute)
+    expect(mockFunc2).toHaveBeenCalled()
+  })
+})

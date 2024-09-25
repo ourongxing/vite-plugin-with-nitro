@@ -1,5 +1,6 @@
-import {ourongxing} from "@ourongxing/eslint-config"
+import { ourongxing } from "@ourongxing/eslint-config"
 
 export default ourongxing({
-  type: "lib"
+  type: "lib",
+  ignores: ["**/node_modules/**", "**/dist/**", "**/*.spec.*", "**/*.test.*", "src/lib/runtime/**"],
 })
