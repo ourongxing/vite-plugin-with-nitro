@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { eventHandler } from "h3"
 
-import renderer from "#analog/ssr"
-import template from "#analog/index"
+import renderer from "#nitro/ssr"
+import template from "#nitro/index"
 
 export default eventHandler(async (event) => {
   const html = await renderer(event.node.req.url, template, {

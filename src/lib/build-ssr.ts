@@ -3,7 +3,7 @@ import process from "node:process"
 import type { UserConfig } from "vite"
 import { build, mergeConfig } from "vite"
 
-import type { Options } from "./options.js"
+import type { Options } from "./options"
 
 export async function buildSSRApp(config: UserConfig, options?: Options): Promise<void> {
   const workspaceRoot = options?.workspaceRoot ?? process.cwd()

@@ -35,7 +35,7 @@ export function getPageHandlers({ workspaceRoot, rootDir, additionalPagesDirs }:
 
     return {
       handler: endpointFile,
-      route: `/_analog${route}`,
+      route: `/_nitro${route}`,
       lazy: true,
     }
   })

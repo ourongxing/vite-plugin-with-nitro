@@ -15,8 +15,8 @@ export const mockNitroConfig: NitroConfig = {
   handlers: [],
   logLevel: 0,
   output: {
-    dir: resolve("dist/analog"),
-    publicDir: resolve("dist/analog/public"),
+    dir: resolve("dist/output"),
+    publicDir: resolve("dist/output/public"),
   },
   rootDir: ".",
   scanDirs: ["src/server"],
@@ -30,7 +30,7 @@ export const mockNitroConfig: NitroConfig = {
   rollupConfig: {
     plugins: [
       {
-        name: "analogjs-vite-plugin-nitro-rollup-page-endpoint",
+        name: "rollup-page-endpoint",
         transform() {},
       },
     ],

@@ -25,10 +25,6 @@
       "require": "./dist/index.cjs"
     }
   },
-  "imports": {
-    "#analog/ssr": "./dist/index.mjs",
-    "#analog/index": "./dist/index.mjs"
-  },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "files": [

@@ -4,7 +4,7 @@ import { normalizePath } from "vite"
 
 export function pageEndpointsPlugin(): Plugin {
   return {
-    name: "analogjs-vite-plugin-nitro-rollup-page-endpoint",
+    name: "rollup-page-endpoint",
     async transform(_code: string, id: string) {
       if (normalizePath(id).includes("/pages/") && id.endsWith(".server.ts")) {
         const compiled = buildSync({

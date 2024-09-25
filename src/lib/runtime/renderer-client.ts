@@ -2,7 +2,7 @@
 
 import { eventHandler } from "h3"
 
-import template from "#analog/index"
+import template from "#nitro/index"
 
 export default eventHandler(async () => {
   return template

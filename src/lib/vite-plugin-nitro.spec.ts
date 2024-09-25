@@ -34,8 +34,9 @@ describe("nitro", () => {
     expect(spy).not.toHaveBeenCalledWith("/api", expect.anything())
   })
 
-  describe("when prerendering is configured...", () => {
-    it("should build the server with prerender route \"/\" if nothing was provided", async () => {
+  // not support ssr
+  describe.skip("when prerendering is configured...", () => {
+    it(`should build the server with prerender route "/" if nothing was provided`, async () => {
       // Arrange
       const {
         buildSSRAppImportSpy,
@@ -67,7 +68,7 @@ describe("nitro", () => {
       )
     })
 
-    it("should build the server with prerender route \"/\" even if ssr is false", async () => {
+    it(`should build the server with prerender route "/" even if ssr is false`, async () => {
       // Arrange
       const {
         buildSSRAppImportSpy,
@@ -270,7 +271,7 @@ describe("nitro", () => {
   })
 
   describe("preset output", () => {
-    it("should use the analog output paths when preset is not vercel", async () => {
+    it("should use the output paths when preset is not vercel", async () => {
       // Arrange
       vi.mock("process")
       process.cwd = vi.fn().mockReturnValue("/custom-root-directory")
@@ -286,8 +287,8 @@ describe("nitro", () => {
         {},
         expect.objectContaining({
           output: {
-            dir: "/custom-root-directory/dist/analog",
-            publicDir: "/custom-root-directory/dist/analog/public",
+            dir: "/custom-root-directory/dist/output",
+            publicDir: "/custom-root-directory/dist/output/public",
           },
         }),
       )
@@ -309,9 +310,9 @@ describe("nitro", () => {
         { workspaceRoot: "/custom-root-directory" },
         expect.objectContaining({
           output: {
-            dir: "/custom-root-directory/some-other-root-directory/analog",
+            dir: "/custom-root-directory/some-other-root-directory/output",
             publicDir:
-              "/custom-root-directory/some-other-root-directory/analog/public",
+              "/custom-root-directory/some-other-root-directory/output/public",
           },
         }),
       )

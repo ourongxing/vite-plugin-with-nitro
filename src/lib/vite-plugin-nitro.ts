@@ -86,10 +86,10 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
           ],
           output: {
             dir: normalizePath(
-              resolve(workspaceRoot, "dist", rootDir, "analog"),
+              resolve(workspaceRoot, "dist", rootDir, "output"),
             ),
             publicDir: normalizePath(
-              resolve(workspaceRoot, "dist", rootDir, "analog/public"),
+              resolve(workspaceRoot, "dist", rootDir, "output/public"),
             ),
           },
           buildDir: normalizePath(
@@ -132,7 +132,7 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
           clientOutputPath = resolve(
             workspaceRoot,
             rootDir,
-            config.build?.outDir || "dist/client",
+            config.build?.outDir || "dist",
           )
         }
 
@@ -141,8 +141,8 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
         )
 
         nitroConfig.alias = {
-          "#analog/ssr": ssrEntry,
-          "#analog/index": indexEntry,
+          "#nitro/ssr": ssrEntry,
+          "#nitro/index": indexEntry,
         }
 
         if (isBuild) {

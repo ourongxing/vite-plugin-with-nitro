@@ -24,7 +24,7 @@ export function devServerPlugin(options: Options): Plugin {
   let root: string
 
   return {
-    name: "analogjs-dev-ssr-plugin",
+    name: "dev-ssr-plugin",
     config(userConfig) {
       config = userConfig
       root = normalizePath(resolve(workspaceRoot, config.root || ".") || ".")
@@ -32,7 +32,7 @@ export function devServerPlugin(options: Options): Plugin {
       return {
         resolve: {
           alias: {
-            "~analog/entry-server": entryServer,
+            "#nitro/entry-server": entryServer,
           },
         },
       }
@@ -55,7 +55,7 @@ export function devServerPlugin(options: Options): Plugin {
 
           try {
             const entryServer = (
-              await viteServer.ssrLoadModule("~analog/entry-server")
+              await viteServer.ssrLoadModule("#nitro/entry-server")
             ).default
             const result: string | Response = await entryServer(
               req.originalUrl,
