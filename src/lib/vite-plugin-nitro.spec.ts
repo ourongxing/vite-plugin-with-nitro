@@ -19,7 +19,7 @@ describe("nitro", () => {
   })
 
   it("should work", () => {
-    expect(nitro({})[1].name).toEqual("@analogjs/vite-plugin-nitro")
+    expect(nitro({})[1].name).toEqual("vite-plugin-with-nitro")
   })
 
   it(`should not call the route middleware in test mode `, async () => {

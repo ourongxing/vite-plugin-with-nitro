@@ -12,11 +12,7 @@ import { mergeConfig, normalizePath } from "vite"
 
 import { buildServer } from "./build-server"
 import { buildSSRApp } from "./build-ssr"
-import type {
-  Options,
-  PrerenderContentDir,
-  PrerenderContentFile,
-} from "./options"
+import type { Options, PrerenderContentDir, PrerenderContentFile } from "./options"
 import { pageEndpointsPlugin } from "./plugins/page-endpoints"
 import { getPageHandlers } from "./utils/get-page-handlers"
 import { buildSitemap } from "./build-sitemap"
@@ -44,7 +40,7 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
   return [
     (options?.ssr ? devServerPlugin(options) : false) as Plugin,
     {
-      name: "@analogjs/vite-plugin-nitro",
+      name: "vite-plugin-with-nitro",
       async config(_config, { command }) {
         isServe = command === "serve"
         isBuild = command === "build"
@@ -151,12 +147,13 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
 
         if (isBuild) {
           nitroConfig.publicAssets = [{ dir: clientOutputPath }]
-          nitroConfig.serverAssets = [
-            {
-              baseName: "public",
-              dir: clientOutputPath,
-            },
-          ]
+          // 导致体积飙升的罪魁祸首
+          // nitroConfig.serverAssets = [
+          //   {
+          //     baseName: "public",
+          //     dir: clientOutputPath,
+          //   },
+          // ]
           nitroConfig.renderer = rendererEntry
 
           if (isEmptyPrerenderRoutes(options)) {
@@ -319,7 +316,7 @@ export function nitro(options?: Options, nitroOptions?: NitroConfig): Plugin[] {
           await buildServer(options, nitroConfig)
 
           console.log(
-            `\n\nThe '@analogjs/platform' server has been successfully built.`,
+            `\nThe server has been successfully built.`,
           )
         }
       },
