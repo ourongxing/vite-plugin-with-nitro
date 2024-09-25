@@ -1,10 +1,12 @@
-# @analogjs/vite-plugin-nitro
+# vite-plugin-with-nitro
 
-A Vite plugin for integrating with [Nitro](https://nitro.unjs.io).
+A Vite plugin for integrating with [Nitro](https://nitro.unjs.io). Forked from `@analogjs/vite-plugin-nitro`.
 
 ## Install
 
-npm install @analogjs/vite-plugin-nitro --save-dev
+```shell
+pnpm add vite-plugin-with-nitro -S
+```
 
 ## Setup
 
@@ -12,14 +14,10 @@ Add the plugin to the `plugins` array in your Vite config
 
 ```ts
 import { defineConfig } from "vite"
-import nitro from "@analogjs/vite-plugin-nitro"
+import nitro from "vite-plugin-with-nitro"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    mainFields: ["module"],
-  },
-
   plugins: [nitro()],
 })
 ```
