@@ -3,11 +3,8 @@ import type { NitroConfig } from "nitropack"
 import { build, copyPublicAssets, createNitro, prepare, prerender } from "nitropack"
 
 import { logger } from "../logger.js"
-import type { Options } from "./options.js"
-import { addPostRenderingHooks } from "./hooks/post-rendering-hook.js"
 
 export async function buildServer(
-  options?: Options,
   nitroConfig?: NitroConfig,
 ): Promise<void> {
   const nitro = await createNitro({
@@ -15,10 +12,6 @@ export async function buildServer(
     preset: process.env.BUILD_PRESET,
     ...nitroConfig,
   })
-
-  if (options?.prerender?.postRenderingHooks) {
-    addPostRenderingHooks(nitro, options.prerender.postRenderingHooks)
-  }
 
   await prepare(nitro)
   await copyPublicAssets(nitro)
@@ -31,7 +24,7 @@ export async function buildServer(
     await prerender(nitro)
   }
 
-  if (!options?.static) {
+  if (!nitroConfig?.static) {
     logger.start("Building Server...")
     await build(nitro)
   }
