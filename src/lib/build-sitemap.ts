@@ -3,6 +3,7 @@ import { resolve } from "node:path"
 import type { XMLBuilder } from "xmlbuilder2/lib/interfaces"
 import { create } from "xmlbuilder2"
 import type { UserConfig } from "vite"
+import { logger } from "../logger"
 import type { SitemapConfig } from "./options"
 
 export interface PagesJson {
@@ -35,10 +36,10 @@ export async function buildSitemap(
 
     const mapPath = `${resolve(outputDir)}/sitemap.xml`
     try {
-      console.log(`Writing sitemap at ${mapPath}`)
+      logger.success(`Writing sitemap at ${mapPath}`)
       writeFileSync(mapPath, sitemap.end({ prettyPrint: true }))
     } catch (e) {
-      console.error(`Unable to write file at ${mapPath}`, e)
+      logger.error(`Unable to write file at ${mapPath}`, e)
     }
   }
 }
