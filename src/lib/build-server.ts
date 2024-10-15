@@ -1,12 +1,10 @@
 import process from "node:process"
-import type { NitroConfig } from "nitropack"
-import { build, copyPublicAssets, createNitro, prepare, prerender } from "nitropack"
+import type { NitroConfig } from "nitro/config"
+import { build, copyPublicAssets, createNitro, prepare, prerender } from "nitro"
 
 import { logger } from "../logger.js"
 
-export async function buildServer(
-  nitroConfig?: NitroConfig,
-): Promise<void> {
+export async function buildServer(nitroConfig: NitroConfig): Promise<void> {
   const nitro = await createNitro({
     dev: false,
     preset: process.env.BUILD_PRESET,
