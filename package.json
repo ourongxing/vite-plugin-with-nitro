@@ -1,8 +1,8 @@
 {
   "name": "vite-plugin-with-nitro",
   "type": "module",
-  "version": "0.0.0-beta.4",
-  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b",
+  "version": "0.0.0-beta.5",
+  "packageManager": "pnpm@9.12.1",
   "description": "A Vite plugin for adding a nitro API server, forked from @analogjs/vite-plugin-nitro",
   "author": "Ou Rongxing <orongxing@gmail.com>",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "dev": "unbuild --stub",
@@ -44,21 +44,22 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "consola": "^3.2.3",
     "esbuild": "^0.24.0",
     "fast-glob": "^3.3.2",
     "front-matter": "^4.0.2",
-    "h3": "^1.12.0",
+    "h3": "^1.13.0",
     "nitropack": "^2.9.7",
     "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {
     "@ourongxing/eslint-config": "3.2.3-beta.3",
-    "@types/node": "^22.7.0",
-    "bumpp": "^9.5.2",
-    "eslint": "^9.11.1",
-    "typescript": "^5.6.2",
+    "@types/node": "^22.7.5",
+    "bumpp": "^9.7.1",
+    "eslint": "^9.12.0",
+    "typescript": "^5.6.3",
     "unbuild": "^2.0.0",
     "vite-tsconfig-paths": "^5.0.1",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.3"
   }
 }
