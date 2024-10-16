@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-with-nitro",
   "type": "module",
-  "version": "0.0.1-beta.20",
+  "version": "0.0.1",
   "packageManager": "pnpm@9.12.1",
   "description": "A Vite plugin for adding a nitro API server, forked from @analogjs/vite-plugin-nitro",
   "author": "Ou <orongxing@gmail.com>",
