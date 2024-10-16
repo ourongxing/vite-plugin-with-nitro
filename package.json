@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-with-nitro",
   "type": "module",
-  "version": "0.0.0-beta.8",
+  "version": "0.0.0-beta.12",
   "packageManager": "pnpm@9.12.1",
   "description": "A Vite plugin for adding a nitro API server, forked from @analogjs/vite-plugin-nitro",
   "author": "Ou <orongxing@gmail.com>",
@@ -35,17 +35,18 @@
   },
   "scripts": {
     "dev": "unbuild --stub",
-    "build": "unbuild",
+    "build": "unbuild && pnpm run build:example",
+    "build:example": "cd example && pnpm build",
     "release": "bumpp && pnpm publish",
     "lint": "eslint ."
   },
   "peerDependencies": {
-    "vite": "^5.4.8"
+    "vite": "^5"
   },
   "dependencies": {
     "consola": "^3.2.3",
     "h3": "^1.13.0",
-    "nitro": "npm:@ourongxing/nitro@latest"
+    "nitropack": "npm:nitropack-nightly@latest"
   },
   "devDependencies": {
     "@ourongxing/eslint-config": "3.2.3-beta.3",
@@ -55,8 +56,12 @@
     "typescript": "^5.6.3",
     "unbuild": "^2.0.0"
   },
+  "pnpm": {
+    "patchedDependencies": {
+      "nitropack-nightly": "patches/nitropack-nightly.patch"
+    }
+  },
   "resolutions": {
-    "nitro": "npm:@ourongxing/nitro@latest",
-    "picomatch": "^4"
+    "picomatch": "^4.0.2"
   }
 }

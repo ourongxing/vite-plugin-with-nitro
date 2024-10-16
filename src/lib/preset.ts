@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 import process from "node:process"
-import type { NitroConfig } from "nitro/config"
+import type { NitroConfig } from "nitropack/config"
 import { normalizePath } from "vite"
 
 export function isVercelPreset(buildPreset: string | undefined): boolean {

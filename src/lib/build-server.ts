@@ -1,6 +1,6 @@
 import process from "node:process"
-import type { NitroConfig } from "nitro/config"
-import { build, copyPublicAssets, createNitro, prepare, prerender } from "nitro"
+import type { NitroConfig } from "nitropack/config"
+import { build, copyPublicAssets, createNitro, prepare, prerender } from "nitropack"
 
 import { logger } from "../logger.js"
 

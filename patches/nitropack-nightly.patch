@@ -1,0 +1,50 @@
+diff --git a/dist/runtime/internal/route-rules.mjs b/dist/runtime/internal/route-rules.mjs
+index 7dd1cf1860f8fcc66feb9db6cabd06427a86ea9c..6e1e499dbd49c052b51786560189611139a0f93c 100644
+--- a/dist/runtime/internal/route-rules.mjs
++++ b/dist/runtime/internal/route-rules.mjs
+@@ -2,6 +2,7 @@ import defu from "defu";
+ import {
+   eventHandler,
+   proxyRequest,
++  getHeader,
+   sendRedirect,
+   setHeaders
+ } from "h3";
+@@ -12,12 +13,15 @@ const config = useRuntimeConfig();
+ const _routeRulesMatcher = toRouteMatcher(
+   createRadixRouter({ routes: config.nitro.routeRules })
+ );
++const goHeader = "x-nitro-go"
+ export function createRouteRulesHandler(ctx) {
+   return eventHandler((event) => {
+     const routeRules = getRouteRules(event);
+     if (routeRules.headers) {
+       setHeaders(event, routeRules.headers);
+     }
++    const goAhead = !!routeRules.headers?.[goHeader] || getHeader(event, goHeader)
++    if (!goAhead) {
+     if (routeRules.redirect) {
+       let target = routeRules.redirect.to;
+       if (target.endsWith("/**")) {
+@@ -31,6 +35,7 @@ export function createRouteRulesHandler(ctx) {
+         const query = getQuery(event.path);
+         target = withQuery(target, query);
+       }
++      appendResponseHeader(event, goHeader, "true");
+       return sendRedirect(event, target, routeRules.redirect.statusCode);
+     }
+     if (routeRules.proxy) {
+@@ -48,9 +53,12 @@ export function createRouteRulesHandler(ctx) {
+       }
+       return proxyRequest(event, target, {
+         fetch: ctx.localFetch,
++        headers: {
++          [goHeader]: "true",
++        },
+         ...routeRules.proxy
+       });
+-    }
++    }}
+   });
+ }
+ export function getRouteRules(event) {
