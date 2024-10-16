@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     nitro({
-      compatibilityDate: '2024-10-16',
-      preset: "cloudflare-pages"
+      preset: "cloudflare-pages",
     })
   ],
 })

@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-with-nitro",
   "type": "module",
-  "version": "0.0.0-beta.12",
+  "version": "0.0.1-beta.20",
   "packageManager": "pnpm@9.12.1",
   "description": "A Vite plugin for adding a nitro API server, forked from @analogjs/vite-plugin-nitro",
   "author": "Ou <orongxing@gmail.com>",
@@ -45,8 +45,9 @@
   },
   "dependencies": {
     "consola": "^3.2.3",
-    "h3": "^1.13.0",
-    "nitropack": "npm:nitropack-nightly@latest"
+    "defu": "^6.1.4",
+    "h3": "npm:h3-nightly@latest",
+    "nitropack": "npm:nitro-go@0.0.0-beta.2"
   },
   "devDependencies": {
     "@ourongxing/eslint-config": "3.2.3-beta.3",
@@ -55,11 +56,6 @@
     "eslint": "^9.12.0",
     "typescript": "^5.6.3",
     "unbuild": "^2.0.0"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "nitropack-nightly": "patches/nitropack-nightly.patch"
-    }
   },
   "resolutions": {
     "picomatch": "^4.0.2"
