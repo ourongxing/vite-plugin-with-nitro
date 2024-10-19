@@ -28,6 +28,7 @@ export function nitro(nitroOptions?: NitroConfig): Plugin {
 
   return {
     name: "vite-plugin-with-nitro",
+    enforce: "post",
     async config(config, { command }) {
       isServe = command === "serve"
       isBuild = command === "build"

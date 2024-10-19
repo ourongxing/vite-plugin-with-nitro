@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     nitro({
-      preset: "cloudflare-pages",
+      preset: "vercel-edge",
     })
   ],
 })
