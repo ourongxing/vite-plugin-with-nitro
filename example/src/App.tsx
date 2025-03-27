@@ -1,17 +1,32 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useCallback, useState } from "react"
+import reactLogo from "./assets/react.svg"
+import viteLogo from "/vite.svg"
+import "./App.css"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState("")
+  const [res, setRes] = useState("")
 
-  useEffect(() => {
-    fetch('/api/me').then(res=>res.json()).then(console.log)
-  }, [])
+  const submit = useCallback(async () => {
+    try {
+      const params = new URLSearchParams()
+      params.set("url", input)
+      setRes(await fetch(`/api/me?${params.toString()}`).then(res => res.text()))
+    } catch (e: unknown) {
+      // @ts-expect-error xxx
+      setRes(e.message)
+    }
+  }, [input])
 
   return (
-    <>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "10px",
+    }}
+    >
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -20,19 +35,45 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div style={{
+        display: "flex",
+        gap: "10px",
+      }}
+      >
+        <input
+          type="text"
+          style={{
+            width: "300px",
+          }}
+          value={input}
+          onInput={e => setInput(e.currentTarget.value)}
+        />
+        <button
+          type="button"
+          onClick={submit}
+          style={{
+            height: "30px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          disabled={!input.startsWith("https://")}
+        >
+          提交
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <div>
+        <textarea
+          value={res}
+          style={{
+            width: "380px",
+            height: 100,
+          }}
+          disabled
+        >
+        </textarea>
+      </div>
+    </div>
   )
 }
 

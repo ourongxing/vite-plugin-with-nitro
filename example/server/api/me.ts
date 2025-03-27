@@ -1,8 +1,11 @@
-import { defineEventHandler, getRequestURL } from "h3";
-
-export default defineEventHandler((event) => {
-  console.log(getRequestURL(event).pathname)
+export default defineEventHandler(async (event) => {
+  const url =  getQuery(event).url
+  if (!url) throw createError({ statusCode: 400, statusMessage: "Missing url" });
+  const last = Date.now()
+  const cookie = (await $fetch.raw(url)).headers.getSetCookie()
   return {
-    name: "Vite Nitro Template",
+    status: "ok",
+    time: Date.now() - last,
+    cookie
   };
 });
